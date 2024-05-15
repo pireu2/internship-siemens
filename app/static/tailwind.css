@@ -504,24 +504,38 @@ video {
 .static {
   position: static;
 }
-.m-5 {
-  margin: 1.25rem;
-}
 .block {
   display: block;
 }
-.bg-red-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+.flex {
+  display: flex;
 }
-.p-4 {
-  padding: 1rem;
+.h-10 {
+  height: 2.5rem;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-col {
+  flex-direction: column;
+}
+.justify-center {
+  justify-content: center;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.align-middle {
+  vertical-align: middle;
 }
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
 }
-.text-white {
+.text-black {
   --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
+  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
