@@ -71,8 +71,6 @@ function search(){
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('searchButton').disabled = true;
-    document.getElementById('searchButton').classList.add('disabled');
     document.getElementById('radius').value = 10;
     document.getElementById('radiusInput').value = 1;
     getLocation();

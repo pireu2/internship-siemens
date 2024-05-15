@@ -2,11 +2,11 @@ import json
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .forms import UploadFileForm
-from .util import import_from_json, calculate_distance
+from .util import import_from_json, calculate_distance, make_all_rooms_available
 
-from .models import Hotel
+from .models import Hotel, Room
 
 
 def index(request):
@@ -74,7 +74,16 @@ def search(request):
 
 def hotel(request, id):
     hotel = Hotel.objects.get(id=id)
-    return render(request, "hotel.html", {"hotel": hotel})
+    rooms = Room.objects.filter(hotel=hotel)
+    return render(request, "hotel.html", {"hotel": hotel, "rooms": rooms})
+
+def book_room(request, id):
+    room = Room.objects.get(id=id)
+    if not room.is_available:
+        return HttpResponse("Room is not available", status=400)
+    room.is_available = False
+    room.save()
+    return JsonResponse({"message": "Room booked successfully"})
 
 def upload(request):
     if request.method == "POST":
@@ -87,5 +96,6 @@ def upload(request):
                 return redirect("upload")
             return redirect("index")
     else:
+        make_all_rooms_available()
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})

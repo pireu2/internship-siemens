@@ -12,4 +12,28 @@
 <div>
     <h1 class="text-black text-2xl">{{hotel.name}}</h1>
 </div>
+
+<div>
+    <ul id="rooms">
+        {% for room in rooms %}
+        <li id="room{{room.id}}" class="flex flex-row gap-3">
+            <h2>{{room.room_number}}</h2>
+            <p>{{room.get_type_display}}</p>
+            <p>{{room.price}}</p>
+            {% if room.is_available %}
+                <p id="availabilityText{{room.id}}">Available</p>
+            {% else %}
+                <p id="availabilityText{{room.id}}">Not Available</p>
+            {% endif %}
+
+            {% if not room.is_available %}
+                <button id="bookButton{{room.id}}" class="disabled" onclick="">Book</button>
+            {% else %}
+                <button id="bookButton{{room.id}}" onclick="bookRoom('{{room.id}}')">Book</button>
+            {% endif %}
+
+        </li>
+        {% endfor %}
+    </ul>
+</div> 
 {% endblock %}
