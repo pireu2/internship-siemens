@@ -14,6 +14,13 @@
 </div>
 
 <div>
+    <input type="date" id="checkIn" name="checkIn" required onchange="refreshRooms('{{hotel.id}}')">
+    <input type="date" id="checkOut" name="checkOut" required onchange="refreshRooms('{{hotel.id}}')">
+</div>
+
+<div id="error"></div>
+
+<div>
     <ul id="rooms">
         {% for room in rooms %}
         <li id="room{{room.id}}" class="flex flex-row gap-3">
@@ -33,6 +40,8 @@
             {% endif %}
 
         </li>
+        {% empty %}
+        <li>No rooms available</li>
         {% endfor %}
     </ul>
 </div> 

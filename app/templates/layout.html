@@ -15,6 +15,14 @@
         <ul class="flex flex-row gap-4">
             <li><a href="/">Home</a></li>
             <li><a href="/upload/">Upload</a></li>
+           
+            {% if user.is_authenticated %}
+            <li><a href="/reservations/">Reservations</a></li>
+            <li><a href="/logout/">Logout</a></li>
+            {% else %}
+            <li><a href="/login/">Login</a></li>
+            <li><a href="/register/">Register</a></li>
+            {% endif %}
         </ul>
     </nav>
 

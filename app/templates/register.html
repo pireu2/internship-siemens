@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block title %} Register {% endblock %}
+
+
+
+{% block body %}
+
+<div>
+    <h1 class="text-black text-2xl">Register</h1>
+
+    <form class="flex flex-col align-middle justify-center" action="/register/" method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" id="username" placeholder="Username">
+        <input type="password" name="password" id="password" placeholder="Password">
+        <input type="submit" value="Register">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </form>
+</div>
+    
+{% endblock %}
