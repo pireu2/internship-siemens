@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block title %} {{hotel.name}} {% endblock %}
+
+{% block scripts %} 
+    <script src="{% static 'js/hotel.js' %}"></script> 
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1 class="text-black text-2xl">{{hotel.name}}</h1>
+</div>
+{% endblock %}

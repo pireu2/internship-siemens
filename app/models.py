@@ -2,15 +2,16 @@ from django.db import models
 
 # Create your models here.
 
+
 class Hotel(models.Model):
-    id=models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
     def __str__(self):
         return self.name
-    
+
 
 class Room(models.Model):
     SINGLE = 1
@@ -18,13 +19,13 @@ class Room(models.Model):
     SUITE = 3
     MATRIMONIAL = 4
     ROOM_TYPES = [
-        (SINGLE, 'Single'),
-        (DOUBLE, 'Double'),
-        (SUITE, 'Suite'),
-        (MATRIMONIAL, 'Matrimonial'),
+        (SINGLE, "Single"),
+        (DOUBLE, "Double"),
+        (SUITE, "Suite"),
+        (MATRIMONIAL, "Matrimonial"),
     ]
 
-    id=models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     room_number = models.IntegerField(default=0)
     type = models.IntegerField(choices=ROOM_TYPES)
@@ -35,4 +36,6 @@ class Room(models.Model):
         return dict(self.ROOM_TYPES)[self.type]
 
     def __str__(self):
-        return f'Room {self.room_number} - {self.get_type_display()} at {self.hotel.name}'
+        return (
+            f"Room {self.room_number} - {self.get_type_display()} at {self.hotel.name}"
+        )
