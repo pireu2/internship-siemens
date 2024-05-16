@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from .forms import UploadFileForm
-from .util import import_from_json, calculate_distance, make_all_rooms_available
+from .util import import_from_json, calculate_distance
 
 from .models import Hotel, Room, User, Reservation
 
@@ -61,7 +61,6 @@ def upload(request):
                 return redirect("upload")
             return redirect("index")
     else:
-        make_all_rooms_available()
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
 
@@ -96,17 +95,17 @@ def cancel(request):
         reservation = Reservation.objects.get(id=reservation_id)
         hotel = reservation.room.hotel
     except Reservation.DoesNotExist:
-        return HttpResponse("Reservation not found", status=404)
+        return JsonResponse({"message": "Reservation not found"}, status=404)
     if reservation.user != request.user:
-        return HttpResponse("You are not authorized to cancel this reservation", status=403)
+        return JsonResponse({"message": "You are not authorized to cancel this reservation"}, status=403)
     
     check_in_time = datetime.combine(reservation.check_in, hotel.check_in_time)
     time_difference = check_in_time - current_time
     if time_difference < timedelta(hours=2) or time_difference < timedelta(0):
-        return HttpResponse("You cannot cancel the reservation less than two hours before check-in", status=400)
+        return JsonResponse({"message": "You cannot cancel the reservation less than two hours before check-in"}, status=400)
 
     reservation.delete()
-    return HttpResponse("Reservation canceled successfully", status=200)
+    return JsonResponse({"message": "Reservation canceled successfully"}, status=200)
 
 def search(request):
     if request.method != "POST":
@@ -146,9 +145,9 @@ def book(request, room_id):
     try:
         room = Room.objects.get(id=room_id)
     except Room.DoesNotExist:
-        return HttpResponse("Room not found", status=404)
+        return JsonResponse({"message" :"Room not found"}, status=404)
     if not room.is_available:
-        return HttpResponse("Room is not available", status=400)
+        return JsonResponse({"message": "Room is not available"}, status=400)
     
     data = json.loads(request.body)
     start_date = data.get("start_date")
@@ -160,20 +159,20 @@ def book(request, room_id):
     
 
     if start_date >= end_date:
-        return HttpResponse("Check-out date must be after check-in date", status=400)
+        return JsonResponse({"message": "Check-out date must be after check-in date"}, status=400)
     if start_date < datetime.now().date():
-        return HttpResponse("Check-in date must be in the future", status=400)
+        return JsonResponse({"message": "Check-in date must be in the future"}, status=400)
     if end_date < datetime.now().date():
-        return HttpResponse("Check-out date must be in the future", status=400)
+        return JsonResponse({"message": "Check-out date must be in the future"}, status=400)
 
     if room.is_available_for(start_date, end_date):
         reservation = Reservation(
             user=request.user, room=room, check_in=start_date, check_out=end_date
         )
         reservation.save()
-        return HttpResponse("Room booked successfully", status=200)
+        return JsonResponse({"message": "Room booked successfully"}, status=200)
     else:
-        return HttpResponse("Room is not available for the selected dates", status=400)
+        return JsonResponse({"message" : "Room is not available for the selected dates"}, status=400)
         
 
             

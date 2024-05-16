@@ -12,7 +12,7 @@
 <div>
     <h1 class="text-black text-2xl">{{hotel.name}}</h1>
 </div>
-
+<div id="hotelId" data-id="{{hotel.id}}"></div>
 <div>
     <input type="date" id="checkIn" name="checkIn" required onchange="refreshRooms('{{hotel.id}}')">
     <input type="date" id="checkOut" name="checkOut" required onchange="refreshRooms('{{hotel.id}}')">

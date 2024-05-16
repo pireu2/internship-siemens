@@ -26,7 +26,7 @@
             <p id="checkIn{{reservation.id}}" >{{reservation.check_in}}</p>
             <p id="checkOut{{reservation.id}}">{{reservation.check_out}}</p>
             <button id="cancelButton{{reservation.id}}" onclick="cancelReservation('{{reservation.id}}')">Cancel</button>
-            <button id="rescheduleButton{{reservation.id}}" onclick="rescheduleReservation('{{reservation.id}}')" >Reschedule</button>
+            <button id="rescheduleButton{{reservation.id}}" onclick="rescheduleReservation('{{reservation.id}}','{{reservation.room.hotel.id}}')" >Reschedule</button>
         </li>
         {% empty %}
         <li>No reservations found</li>

@@ -3,8 +3,6 @@ from math import radians, cos, sin, sqrt, atan2
 from .models import Hotel, Room
 
 
-def make_all_rooms_available() -> None:
-    Room.objects.update(is_available=True)
 
 def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     try:

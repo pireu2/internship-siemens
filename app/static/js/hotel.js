@@ -60,11 +60,14 @@ function bookRoom(id){
         }),
     })
     .then(response => {
-        const contentType = response.headers.get('content-type');
-        if (!response.ok) {
-            return response.text().then(text => {throw new Error(text)});
+        if(response.ok){
+            return response.json();
         }
-        return response.json();
+        else{
+            return response.json().then(data => {
+                throw new Error(data.message);
+            });
+        }
     })
     .then(data => {
         window.location.href = '/reservations';
@@ -106,16 +109,29 @@ function refreshRooms(id){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const hotelId = document.getElementById('hotelId').dataset.id;
+    const urlParams = new URLSearchParams(window.location.search);
+
+    var checkInParam = '';
+    var checkOutParam = '';
+
+    if(urlParams.has('check_in')){
+        document.getElementById('checkIn').value = urlParams.get('check_in');
+        checkInParam = document.getElementById('checkIn').value;
+    }
+    if(urlParams.has('check_out')){
+        document.getElementById('checkOut').value = urlParams.get('check_out');
+        checkOutParam = document.getElementById('checkOut').value;
+    }
+
     const today = new Date();
-    var dateString = today.toLocaleString().split('T')[0];
-    
-    dateString = dateString.split(' ')[0].replace(',', '');
-    const date = dateString.split('/');
-    const year = date[2];
-    const month = (date[0] < 9) ? '0'+ date[0] : date[0];
-    const day = (date[1] < 9) ? '0'+ date[1] : date[1];
-    dateString = `${year}-${month}-${day}`;
-    
-    document.getElementById('checkIn').min = dateString;
-    document.getElementById('checkOut').min = dateString;
+    const dateString = convertDateFormat(today.toLocaleDateString());
+    const checkInDate = checkInParam || dateString;
+    const checkOutDate = checkOutParam || dateString;
+
+
+    document.getElementById('checkIn').min = checkInDate;
+    document.getElementById('checkOut').min = checkOutDate;
+
+    refreshRooms(hotelId);
 });

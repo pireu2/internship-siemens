@@ -1,4 +1,4 @@
-function cancelReservation(reservation_id){
+function checkTime(reservation_id){
     const reservationElement = document.getElementById(`reservation${reservation_id}`);
     const checkInTimeString = reservationElement.dataset.checkInTime;
     const checkInDateString = reservationElement.dataset.checkInDate;
@@ -8,18 +8,22 @@ function cancelReservation(reservation_id){
     const checkInDate = new Date(`${checkInDateString}T` + checkInTimeString);
 
     const difference = checkInDate - currentDate;
-    console.log(checkInDate);
-    console.log(currentDate);
-    console.log(difference);
 
     if(difference < 2 * 60 * 60 * 1000 || difference < 0){
         document.getElementById('error').innerText = 'You cannot cancel the reservation less than two hours before check-in';
-        return;
+        return false;
     }
+    return true;
+}
 
 
+
+function cancelReservation(reservation_id, callback = () => {}){
+    if(!checkTime(reservation_id)){
+        return Promise.reject(new Error('Cannot cancel the reservation less than two hours before check-in'));
+    }
     url = `/cancel/`;
-
+    const currentDate = new Date();
     fetch(url, {
         method: 'POST',
         headers: {
@@ -37,11 +41,12 @@ function cancelReservation(reservation_id){
             if(document.getElementById('reservations').childElementCount === 0){
                 document.getElementById('reservations').innerHTML = '<li>No reservations found</li>';
             }
+            callback();
         }
         else{
-            return response.text().then(text => {
-                throw new Error(text);
-            })
+            return response.json().then(data => {
+                throw new Error(data.message);
+            });
         }
     })
     .catch(error => {
@@ -49,10 +54,17 @@ function cancelReservation(reservation_id){
     });
 }
 
-function rescheduleReservation(reservation_id){
-    const checkIn = document.getElementById(`checkIn${reservation_id}`).value;
-    const checkOut = document.getElementById(`checkOut${reservation_id}`).value;
+function rescheduleReservation(reservation_id,hotel_id){
+    const checkIn = document.getElementById(`checkIn${reservation_id}`).innerHTML;
+    const checkOut = document.getElementById(`checkOut${reservation_id}`).innerHTML;
 
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
 
+    const checkInString = convertDateFormat(checkInDate.toLocaleDateString());
+    const checkOutString = convertDateFormat(checkOutDate.toLocaleDateString());
 
+    cancelReservation(reservation_id, () => {
+        window.location.href = `/hotel/${hotel_id}?check_in=${checkInString}&check_out=${checkOutString}`;
+    });
 }
