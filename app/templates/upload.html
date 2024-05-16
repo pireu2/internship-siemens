@@ -2,22 +2,24 @@
 
 {% block title %}Upload file{% endblock %}
 
-
 {% block body %}
+<div class="flex flex-col items-center justify-center min-h-screen p-6">
+    <h2 class="mb-4 text-4xl text-center font-extrabold dark:text-white">Upload Hotel data</h2>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %} class="text-red-600 underline">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-<form action = "/upload/" method = "post" enctype="multipart/form-data" >
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-</form>
-
-
+    <form action="/upload/" method="post" enctype="multipart/form-data" class="w-full max-w-md">
+        {% csrf_token %}
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="{{ form.file.id_for_label }}">Upload file</label>
+        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="{{ form.file.id_for_label }}" type="file" name="{{ form.file.html_name }}">
+        <div class="text-center mt-4">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Upload</button>
+        </div>
+    </form>
+</div>
 {% endblock %}

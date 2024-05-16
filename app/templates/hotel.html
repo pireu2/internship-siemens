@@ -9,40 +9,66 @@
 {% endblock %}
 
 {% block body %}
-<div>
-    <h1 class="text-black text-2xl">{{hotel.name}}</h1>
+
+<div class="flex align-middle justify-center flex-col min-h-screen p-4">
+    <h2 class="mb-4 text-4xl text-center font-extrabold dark:text-white">{{hotel.name}}</h2>
+    
+    <div id="hotelId" data-id="{{hotel.id}}"></div>
+
+
+    <div class="mb-6 flex flex-col align-middle justify-center items-center">
+        <div id="error" class="text-red-600 underline"></div>
+        <div class="w-full max-w-md">
+            <div class="mb-6 text-center">
+                <p class="mb-2 text-base font-normal text-gray-500 lg:text-lg sm:px-16 xl:px-48 dark:text-gray-400">Coords: {{hotel.latitude|floatformat:2}} {{hotel.longitude|floatformat:2}}</p>
+                <p class=" text-base font-normal text-gray-500 lg:text-lg sm:px-16 xl:px-48 dark:text-gray-400">Check in: {{hotel.check_in_time|time:"H:i"}}</p>
+                <p class="mb-6 text-base font-normal text-gray-500 lg:text-lg sm:px-16 xl:px-48 dark:text-gray-400">Check out: {{hotel.check_out_time|time:"H:i"}}</p>
+            </div>
+            
+            <div class="mb-6">
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Date:</label>
+                <input type="date" id="checkIn" name="checkIn" required onchange="refreshRooms('{{hotel.id}}')" class=" cursor-pointer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+    
+            <div clas="mb-6">
+                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">End Date:</label>
+                <input type="date" id="checkOut" name="checkOut" required onchange="refreshRooms('{{hotel.id}}')" class=" cursor-pointer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    <div class="text-center">
+        <ul id="rooms" class="flex flex-col gap-4 justify-center items-center max-w-md w-full mx-auto">
+            {% for room in rooms %}
+
+            <div id="room{{room.id}}" class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Room: {{room.room_number}}</h5>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Type: {{room.get_type_display}}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Price: {{room.price}}$</p>
+                {% if room.is_available %}
+                    <p id="availabilityText{{room.id}}" class="mb-3 font-normal text-gray-700 dark:text-gray-400">Available</p>
+                {% else %}
+                    <p id="availabilityText{{room.id}}" class="mb-3 font-normal text-gray-700 dark:text-gray-400">Not Available</p>
+                {% endif %}
+
+                {% if not room.is_available %}
+                    <button id="bookButton{{room.id}}" onclick="" class="disabled inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Book</button>
+                {% else %}
+                    <button id="bookButton{{room.id}}" onclick="bookRoom('{{room.id}}')" class=" inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Book</button>
+                {% endif %}
+            </div>
+
+            {% empty %}
+            <li class="mb-3 font-normal text-gray-700 dark:text-gray-400">No rooms available</li>
+            {% endfor %}
+        </ul>
+    </div> 
+
+
 </div>
-<div id="hotelId" data-id="{{hotel.id}}"></div>
-<div>
-    <input type="date" id="checkIn" name="checkIn" required onchange="refreshRooms('{{hotel.id}}')">
-    <input type="date" id="checkOut" name="checkOut" required onchange="refreshRooms('{{hotel.id}}')">
-</div>
 
-<div id="error"></div>
 
-<div>
-    <ul id="rooms">
-        {% for room in rooms %}
-        <li id="room{{room.id}}" class="flex flex-row gap-3">
-            <h2>{{room.room_number}}</h2>
-            <p>{{room.get_type_display}}</p>
-            <p>{{room.price}}</p>
-            {% if room.is_available %}
-                <p id="availabilityText{{room.id}}">Available</p>
-            {% else %}
-                <p id="availabilityText{{room.id}}">Not Available</p>
-            {% endif %}
 
-            {% if not room.is_available %}
-                <button id="bookButton{{room.id}}" class="disabled" onclick="">Book</button>
-            {% else %}
-                <button id="bookButton{{room.id}}" onclick="bookRoom('{{room.id}}')">Book</button>
-            {% endif %}
-
-        </li>
-        {% empty %}
-        <li>No rooms available</li>
-        {% endfor %}
-    </ul>
-</div> 
 {% endblock %}
