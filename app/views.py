@@ -74,8 +74,10 @@ def hotel(request, id):
     return render(request, "hotel.html", {"hotel": hotel, "rooms": rooms})
 
 
-@login_required
+
 def reservations(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
     reservations = Reservation.objects.filter(user=request.user)
     return render(request, "reservations.html", {"reservations": reservations})
 
@@ -83,8 +85,10 @@ def reservations(request):
 ################################################ API ###############################################
 ####################################################################################################
 
-@login_required
+
 def cancel(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"message": "You must be logged in to cancel a reservation"}, status=403)
     if request.method != "POST":
         return redirect("index")
     try:
@@ -142,8 +146,10 @@ def search(request):
 
 
 
-@login_required
+
 def book(request, room_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"message": "You must be logged in to book a room"}, status=403)
     if request.method != "POST":
         return redirect("index")
     try:
