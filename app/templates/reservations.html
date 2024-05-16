@@ -4,24 +4,32 @@
 
 {% block title %} Reservations {% endblock %}
 
-
+{% block scripts %}
+<script src="{% static 'js/reservations.js' %}"></script>
+{% endblock %}
 
 {% block body %}
 
+
 <div>
     <h1 class="text-black text-2xl">Reservations</h1>
+    <div id="error"></div>
     <ul id="reservations">
         {% for reservation in reservations %}
-        <li id="reservation{{reservation.id}}" class="flex flex-row gap-3">
+        <li id="reservation{{reservation.id}}" 
+         data-check-in-time="{{reservation.room.hotel.check_in_time|date:'H:i:s'}}"
+         data-check-in-date="{{reservation.check_in|date:'Y-m-d'}}"
+         class="flex flex-row gap-3">
             <h2>{{reservation.room.room_number}}</h2>
             <p>{{reservation.room.get_type_display}}</p>
             <p>{{reservation.room.price}}</p>
-            <p>{{reservation.check_in}}</p>
-            <p>{{reservation.check_out}}</p>
-            <button id="cancelButton{{reservation.id}}">Cancel</button>
+            <p id="checkIn{{reservation.id}}" >{{reservation.check_in}}</p>
+            <p id="checkOut{{reservation.id}}">{{reservation.check_out}}</p>
+            <button id="cancelButton{{reservation.id}}" onclick="cancelReservation('{{reservation.id}}')">Cancel</button>
+            <button id="rescheduleButton{{reservation.id}}" onclick="rescheduleReservation('{{reservation.id}}')" >Reschedule</button>
         </li>
         {% empty %}
-        <li>No reservations</li>
+        <li>No reservations found</li>
         {% endfor %}
 </div>
 

@@ -6,11 +6,15 @@ function validateDates(){
     const end = new Date(endDate);
     const today = new Date();
 
+
+
     if(startDate === ''){
         document.getElementById('checkIn').setCustomValidity('Please select a check in date');
         document.getElementById('checkIn').reportValidity();
         return false;
     }
+
+    document.getElementById('checkOut').min = startDate;
     
     if(endDate === ''){
         document.getElementById('checkOut').setCustomValidity('Please select a check out date');
@@ -24,7 +28,8 @@ function validateDates(){
         return false;
     }
 
-    if(start < today){
+
+    if(start.getDate() < today.getDate() || (start.getDate() === today.getDate() && today.getHours() > 12)){
         document.getElementById('checkIn').setCustomValidity('Check in date must be after today');
         document.getElementById('checkIn').reportValidity();
         return false;
@@ -55,31 +60,30 @@ function bookRoom(id){
         }),
     })
     .then(response => {
-        if(response.status === 200){
-            window.location.href = '/reservations';
+        const contentType = response.headers.get('content-type');
+        if (!response.ok) {
+            return response.text().then(text => {throw new Error(text)});
         }
-        response.json()
+        return response.json();
     })
     .then(data => {
-       
+        window.location.href = '/reservations';
     })
     .catch((error) => {
-        console.error('Error:', error);
+        document.getElementById('error').innerText = error.message;
     });
    
 }
 
 function refreshRooms(id){
     if (!validateDates()){
-        console.log('Invalid dates');
         return;
     }
 
     const startDate = document.getElementById('checkIn').value;
     const endDate = document.getElementById('checkOut').value; 
 
-    const url= `/get_rooms_by_hotel_and_date/${id}/${startDate}/${endDate}`;
-    console.log(url);
+    const url= `/get_rooms/${id}/${startDate}/${endDate}`;
     fetch(url)
     .then(response => response.json())
     .then(data => {
@@ -92,8 +96,8 @@ function refreshRooms(id){
             <h2>${room.room_number}</h2>
             <p>${room.type}</p>
             <p>${room.price}</p>
-            <p id="availabilityText${room.id}">${room.is_available ? 'Available' : 'Not Available'}</p>
-            <button id="bookButton${room.id}" ${room.is_available ? '' : 'class="disabled"'} onclick="bookRoom('${room.id}')">Book</button>
+            <p id="availabilityText${room.id}">${room.is_available ? room.is_booked ? 'Booked' : 'Available' : 'Not Available'}</p>
+            <button id="bookButton${room.id}" ${room.is_available && !room.is_booked ? '' : 'class="disabled"'} onclick="bookRoom('${room.id}')">Book</button>
             `;
             li.classList.add('flex', 'flex-row', 'gap-3');
             roomList.appendChild(li);
@@ -109,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = dateString.split('/');
     const year = date[2];
     const month = (date[0] < 9) ? '0'+ date[0] : date[0];
-    const day = date[1];
+    const day = (date[1] < 9) ? '0'+ date[1] : date[1];
     dateString = `${year}-${month}-${day}`;
     
     document.getElementById('checkIn').min = dateString;

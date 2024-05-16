@@ -16,6 +16,8 @@ class Hotel(models.Model):
     name = models.CharField(max_length=100)
     latitude = models.FloatField()
     longitude = models.FloatField()
+    check_in_time = models.TimeField(default='14:00:00')
+    check_out_time = models.TimeField(default='12:00:00')
 
     def __str__(self):
         return self.name
@@ -40,7 +42,7 @@ class Room(models.Model):
     is_available = models.BooleanField(default=True)
     is_booked = models.BooleanField(default=False)
 
-    def is_booked_for(self, check_in, check_out):
+    def is_available_for(self, check_in, check_out):
         overlapping_reservations = Reservation.objects.filter(
             Q(room=self),
             Q(check_in__lte=check_out, check_out__gte=check_in)

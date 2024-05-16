@@ -1,7 +1,7 @@
 import json
 
 
-from datetime import date, datetime
+from datetime import datetime, timedelta
 
 from django.contrib.auth import login as auth_login,logout as auth_logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -80,6 +80,34 @@ def reservations(request):
     reservations = Reservation.objects.filter(user=request.user)
     return render(request, "reservations.html", {"reservations": reservations})
 
+####################################################################################################
+################################################ API ###############################################
+####################################################################################################
+
+@login_required
+def cancel(request):
+    if request.method != "POST":
+        return redirect("index")
+    try:
+        data = json.loads(request.body)
+        reservation_id = data.get("reservation_id")
+        current_time_str = data.get("current_time")
+        current_time = datetime.strptime(current_time_str, '%m/%d/%Y, %I:%M:%S %p')
+        reservation = Reservation.objects.get(id=reservation_id)
+        hotel = reservation.room.hotel
+    except Reservation.DoesNotExist:
+        return HttpResponse("Reservation not found", status=404)
+    if reservation.user != request.user:
+        return HttpResponse("You are not authorized to cancel this reservation", status=403)
+    
+    check_in_time = datetime.combine(reservation.check_in, hotel.check_in_time)
+    time_difference = check_in_time - current_time
+    if time_difference < timedelta(hours=2) or time_difference < timedelta(0):
+        return HttpResponse("You cannot cancel the reservation less than two hours before check-in", status=400)
+
+    reservation.delete()
+    return HttpResponse("Reservation canceled successfully", status=200)
+
 def search(request):
     if request.method != "POST":
         return redirect("index")
@@ -138,7 +166,7 @@ def book(request, room_id):
     if end_date < datetime.now().date():
         return HttpResponse("Check-out date must be in the future", status=400)
 
-    if room.is_booked_for(start_date, end_date):
+    if room.is_available_for(start_date, end_date):
         reservation = Reservation(
             user=request.user, room=room, check_in=start_date, check_out=end_date
         )
@@ -150,20 +178,21 @@ def book(request, room_id):
 
             
 
-def get_rooms_by_hotel_and_date(request, hotel_id, start_date, end_date):
+def get_rooms(request, hotel_id, start_date, end_date):
     rooms = Room.objects.filter(hotel_id=hotel_id)
     rooms_data = []
     for room in rooms:
-        if room.is_booked_for(start_date, end_date):
-            rooms_data.append(
-                {
-                    "id": room.id,
-                    "room_number": room.room_number,
-                    "type": room.get_type_display(),
-                    "price": room.price,
-                    "is_available": room.is_available,
-                }
-            )
+        is_booked = not room.is_available_for(start_date, end_date)
+        rooms_data.append(
+            {
+                "id": room.id,
+                "room_number": room.room_number,
+                "type": room.get_type_display(),
+                "price": room.price,
+                "is_available": room.is_available,
+                "is_booked": is_booked,
+            }
+        )
     return JsonResponse({"rooms": rooms_data}, status=200)  
     
 

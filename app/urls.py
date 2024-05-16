@@ -16,6 +16,7 @@ urlpatterns = [
 
     #API
     path("search/", views.search, name="search"),
-    path("get_rooms_by_hotel_and_date/<int:hotel_id>/<str:start_date>/<str:end_date>", views.get_rooms_by_hotel_and_date, name="get_rooms_by_hotel_and_date"),
+    path("get_rooms/<int:hotel_id>/<str:start_date>/<str:end_date>", views.get_rooms, name="get_rooms"),
     path("book/<int:room_id>", views.book, name="book"),
+    path("cancel/", views.cancel, name="cancel"),
 ]
