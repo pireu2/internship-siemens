@@ -91,7 +91,11 @@ def cancel(request):
         data = json.loads(request.body)
         reservation_id = data.get("reservation_id")
         current_time_str = data.get("current_time")
-        current_time = datetime.strptime(current_time_str, '%m/%d/%Y, %I:%M:%S %p')
+        
+        print(reservation_id)
+
+        current_time = datetime.strptime(current_time_str, '%Y/%m/%d %H:%M:%S')
+
         reservation = Reservation.objects.get(id=reservation_id)
         hotel = reservation.room.hotel
     except Reservation.DoesNotExist:
@@ -152,6 +156,8 @@ def book(request, room_id):
     data = json.loads(request.body)
     start_date = data.get("start_date")
     end_date = data.get("end_date")
+
+    
 
     start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
     end_date = datetime.strptime(end_date, "%Y-%m-%d").date()

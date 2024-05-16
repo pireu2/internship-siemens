@@ -20,10 +20,19 @@ function checkTime(reservation_id){
 
 function cancelReservation(reservation_id, callback = () => {}){
     if(!checkTime(reservation_id)){
-        return Promise.reject(new Error('Cannot cancel the reservation less than two hours before check-in'));
+        return;
     }
     url = `/cancel/`;
     const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = (currentDate.getMonth() + 1) < 10 ? `0${currentDate.getMonth() + 1}` : currentDate.getMonth() + 1;
+    const currentDay = currentDate.getDate() < 10 ? `0${currentDate.getDate()}` : currentDate.getDate();
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+    const currentSecond = currentDate.getSeconds();
+
+    const dateTime = `${currentYear}/${currentMonth}/${currentDay} ${currentHour}:${currentMinute}:${currentSecond}`;
+    console.log(dateTime);
     fetch(url, {
         method: 'POST',
         headers: {
@@ -32,7 +41,7 @@ function cancelReservation(reservation_id, callback = () => {}){
         },
         body: JSON.stringify({
             reservation_id: reservation_id,
-            current_time: currentDate.toLocaleString(),  
+            current_time: dateTime,  
         }),
     })
     .then(response => {

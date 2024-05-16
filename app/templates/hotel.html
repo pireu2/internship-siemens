@@ -16,13 +16,13 @@
     <div id="hotelId" data-id="{{hotel.id}}"></div>
 
 
-    <div class="mb-6 flex flex-col align-middle justify-center items-center">
+    <div class="mb-6 flex flex-col items-center">
         <div id="error" class="text-red-600 underline"></div>
         <div class="w-full max-w-md">
             <div class="mb-6 text-center">
-                <p class="mb-2 text-base font-normal text-gray-500 lg:text-lg sm:px-16 xl:px-48 dark:text-gray-400">Coords: {{hotel.latitude|floatformat:2}} {{hotel.longitude|floatformat:2}}</p>
-                <p class=" text-base font-normal text-gray-500 lg:text-lg sm:px-16 xl:px-48 dark:text-gray-400">Check in: {{hotel.check_in_time|time:"H:i"}}</p>
-                <p class="mb-6 text-base font-normal text-gray-500 lg:text-lg sm:px-16 xl:px-48 dark:text-gray-400">Check out: {{hotel.check_out_time|time:"H:i"}}</p>
+                <p class="mb-2 text-base font-normal text-gray-500 lg:text-lg sm:px-16 dark:text-gray-400 ">Coords: {{hotel.latitude|floatformat:2}} {{hotel.longitude|floatformat:2}}</p>
+                <p class="text-base font-normal text-gray-500 lg:text-lg sm:px-16  dark:text-gray-400 ">Check in: {{hotel.check_in_time|time:"H:i"}}</p>
+                <p class="mb-6 text-base font-normal text-gray-500 lg:text-lg sm:px-16  dark:text-gray-400 ">Check out: {{hotel.check_out_time|time:"H:i"}}</p>
             </div>
             
             <div class="mb-6">
