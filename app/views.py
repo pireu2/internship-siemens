@@ -142,6 +142,8 @@ def search(request):
         <= radius
     ]
 
+    hotels_in_radius = sorted(hotels_in_radius, key=lambda x: x["distance"])
+
     return JsonResponse({"hotels": hotels_in_radius}, status=200)
 
 
