@@ -28,8 +28,8 @@
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Room: {{reservation.room.room_number}}</h5>
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Type: {{reservation.room.get_type_display}}</p>
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Price: {{reservation.room.price}}$</p>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400" id="checkIn{{reservation.id}}">Check in: {{reservation.check_in}}</p>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400" id="checkOut{{reservation.id}}">Check out: {{reservation.check_out}}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400" id="checkIn{{reservation.id}}" data-date="{{reservation.check_in}}">Check in: {{reservation.check_in}}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400" id="checkOut{{reservation.id}}" data-date="{{reservation.check_out}}">Check out: {{reservation.check_out}}</p>
                 
                 {% if reservation.has_passed %}
                 <div>

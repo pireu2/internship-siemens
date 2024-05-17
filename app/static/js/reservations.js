@@ -66,7 +66,6 @@ function cancelReservation(reservation_id, callback = () => {}){
     const currentSecond = currentDate.getSeconds();
 
     const dateTime = `${currentYear}/${currentMonth}/${currentDay} ${currentHour}:${currentMinute}:${currentSecond}`;
-    console.log(dateTime);
     fetch(url, {
         method: 'POST',
         headers: {
@@ -98,8 +97,8 @@ function cancelReservation(reservation_id, callback = () => {}){
 }
 
 function rescheduleReservation(reservation_id,hotel_id){
-    const checkIn = document.getElementById(`checkIn${reservation_id}`).innerHTML;
-    const checkOut = document.getElementById(`checkOut${reservation_id}`).innerHTML;
+    const checkIn = document.getElementById(`checkIn${reservation_id}`).dataset.date;
+    const checkOut = document.getElementById(`checkOut${reservation_id}`).dataset.date;
 
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);

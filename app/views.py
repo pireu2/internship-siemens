@@ -111,8 +111,7 @@ def cancel(request):
         data = json.loads(request.body)
         reservation_id = data.get("reservation_id")
         current_time_str = data.get("current_time")
-        
-        print(reservation_id)
+
 
         current_time = datetime.strptime(current_time_str, '%Y/%m/%d %H:%M:%S')
 
