@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
@@ -63,6 +64,10 @@ class Reservation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="reservations")
     check_in = models.DateField()
     check_out = models.DateField()
+    feedback = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user} - {self.room} - {self.check_in} - {self.check_out}"
+    
+    def has_passed(self):
+        return self.check_out < datetime.now().date()

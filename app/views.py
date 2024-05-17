@@ -85,6 +85,22 @@ def reservations(request):
 ################################################ API ###############################################
 ####################################################################################################
 
+def submit_feedback(request, reservation_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"message": "You must be logged in to submit feedback"}, status=403)
+    if request.method != "POST":
+        return redirect("index")
+    try:
+        reservation = Reservation.objects.get(id=reservation_id)
+    except Reservation.DoesNotExist:
+        return JsonResponse({"message": "Reservation not found"}, status=404)
+    if reservation.user != request.user:
+        return JsonResponse({"message": "You are not authorized to submit feedback for this reservation"}, status=403)
+    data = json.loads(request.body)
+    feedback = data.get("feedback")
+    reservation.feedback = feedback
+    reservation.save()
+    return JsonResponse({"message": "Feedback submitted successfully"}, status=200)
 
 def cancel(request):
     if not request.user.is_authenticated:

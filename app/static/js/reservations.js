@@ -16,6 +16,40 @@ function checkTime(reservation_id){
     return true;
 }
 
+function submitFeedback(reservation_id){
+    const feedback = document.getElementById(`feedback${reservation_id}`).value;
+    url = `/submit_feedback/${reservation_id}/`;
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+            reservation_id: reservation_id,
+            feedback: feedback,
+        }),
+    })
+    .then(response => {
+        if(response.ok){
+            if (feedback === ''){
+                document.getElementById(`submitButton${reservation_id}`).innerHTML = 'Submit';
+            }
+            else{ 
+                document.getElementById(`submitButton${reservation_id}`).innerHTML = 'Change Feedback';
+            };
+        }
+        else{
+            return response.json().then(data => {
+                throw new Error(data.message);
+            });
+        }
+    })
+    .catch(error => {
+        document.getElementById('error').innerText = error.message;
+    });
+
+}
 
 
 function cancelReservation(reservation_id, callback = () => {}){

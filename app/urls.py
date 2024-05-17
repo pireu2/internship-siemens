@@ -15,8 +15,9 @@ urlpatterns = [
     
 
     #API
+    path("submit_feedback/<int:reservation_id>/", views.submit_feedback, name="submit_feedback"),
     path("search/", views.search, name="search"),
     path("get_rooms/<int:hotel_id>/<str:start_date>/<str:end_date>", views.get_rooms, name="get_rooms"),
     path("book/<int:room_id>", views.book, name="book"),
-    path("cancel/", views.cancel, name="cancel"),
+    path("cancel/", views.cancel, name="cancel")
 ]
